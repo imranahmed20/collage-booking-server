@@ -63,7 +63,7 @@ async function run() {
             if (req.query?.email) {
                 query = { email: req.query.email }
             }
-            const cursor = submitCollection.find(query).sort({ price: 1 }).limit(20)
+            const cursor = submitCollection.find(query).sort({ number: 1 }).limit(20)
             const result = await cursor.toArray()
             res.send(result)
         })
