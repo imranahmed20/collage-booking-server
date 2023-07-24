@@ -28,6 +28,7 @@ async function run() {
 
         const collageCollection = client.db('collageBooking').collection('collage')
         const nameCollection = client.db('collageBooking').collection('name')
+        const submitCollection = client.db('collageBooking').collection('submit')
 
         app.get('/collage', async (req, res) => {
             const result = await collageCollection.find().toArray()
@@ -42,6 +43,28 @@ async function run() {
 
         app.get('/name', async (req, res) => {
             const result = await nameCollection.find().toArray()
+            res.send(result)
+        })
+        app.get('/name/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await nameCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.post('/submit', async (req, res) => {
+            const orders = req.body;
+            const result = await submitCollection.insertOne(orders)
+            res.send(result)
+        })
+
+        app.get('/submit', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const cursor = submitCollection.find(query).sort({ price: 1 }).limit(20)
+            const result = await cursor.toArray()
             res.send(result)
         })
 
